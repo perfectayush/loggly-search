@@ -1,5 +1,8 @@
 extern crate reqwest;
 
+use std::io;
+use std::io::Write;
+
 use reqwest::Client;
 use serde_json::value::Value;
 
@@ -61,9 +64,11 @@ impl Loggly {
         let uri = self.get_search_uri();
 
         self.fetch_logs(&uri).await;
+        let stdout = io::stdout();
+        let mut stdout_lock = stdout.lock();
         if let Some(events) = self.get_log_events() {
             events.iter().for_each(|event| {
-                    println!("{}", event);
+                writeln!(stdout_lock, "{}", event).unwrap();
             });
         }
     }
