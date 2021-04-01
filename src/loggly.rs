@@ -13,20 +13,22 @@ pub struct Loggly {
     account: String,
     api_token: String,
     response: Option<Value>,
+    from: String,
 }
 
 impl Loggly {
-    pub fn init(account: &str, api_token: &str) -> Self {
+    pub fn init(account: &str, api_token: &str, from: &str) -> Self {
         Loggly {
             account: String::from(account),
             api_token: String::from(api_token),
             client: Client::new(),
             response: None,
+            from: String::from(from),
         }
     }
 
     fn create_search_uri(&self) -> String {
-        format!("https://{}.loggly.com/apiv2/events/iterate?q=*&from=-10m&until=now&size=100", self.account)
+        format!("https://{}.loggly.com/apiv2/events/iterate?q=*&from={}&until=now&size=100", self.account, self.from)
     }
 
     pub async fn fetch_logs(&mut self) {
