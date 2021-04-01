@@ -62,13 +62,19 @@ impl Loggly {
     }
 
     pub async fn print_logs(&mut self) {
-        self.fetch_logs(&uri).await;
         let stdout = io::stdout();
         let mut stdout_lock = stdout.lock();
         if let Some(events) = self.get_log_events() {
             events.iter().for_each(|event| {
                 writeln!(stdout_lock, "{}", event).unwrap();
             });
+        }
+    }
+
+    pub async fn main_loop(&mut self) {
+        loop {
+            self.fetch_logs().await;
+            self.print_logs().await;
         }
     }
 }
