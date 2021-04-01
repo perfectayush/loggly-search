@@ -29,7 +29,8 @@ impl Loggly {
         format!("https://{}.loggly.com/apiv2/events/iterate?q=*&from=-10m&until=now&size=100", self.account)
     }
 
-    pub async fn fetch_logs(&mut self, uri: &str) {
+    pub async fn fetch_logs(&mut self) {
+        let uri = self.get_search_uri();
         let res = self.client
             .get(uri)
             .bearer_auth(&self.api_token)
@@ -61,8 +62,6 @@ impl Loggly {
     }
 
     pub async fn print_logs(&mut self) {
-        let uri = self.get_search_uri();
-
         self.fetch_logs(&uri).await;
         let stdout = io::stdout();
         let mut stdout_lock = stdout.lock();
