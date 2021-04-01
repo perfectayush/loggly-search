@@ -21,7 +21,8 @@ pub fn get_cli_args() -> ArgMatches<'static> {
              .help(
 "Time to start seaching from.
 Can take absolute date in format 'yyyy-MM-dd HH:mm:ss.SSS'. Eg: `2020-08-13T18:45:00.000`
-Or relative date values like `now`, last 10 mins `-10m`, last 5 weeks `-5w`, last 12 hours `-12h`"
+Or relative date values like `now`, last 10 mins `-10m`, last 5 weeks `-5w`, last 12 hours `-12h`
+Or absolute Unix timestamp in *milliseconds* eg. `1617315836793`"
              )
             .takes_value(true))
         .arg(Arg::with_name("account")
