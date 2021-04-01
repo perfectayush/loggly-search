@@ -9,6 +9,7 @@ async fn main() {
     let token = args.value_of("token").unwrap_or("unset");
     let account = args.value_of("account").unwrap_or("unset");
     let from = args.value_of("from").unwrap();
-    let mut loggly_client = Loggly::init(&account, &token, &from);
+    let query = args.value_of("query").unwrap();
+    let mut loggly_client = Loggly::init(&account, &token, &from, &query);
     loggly_client.main_loop().await;
 }

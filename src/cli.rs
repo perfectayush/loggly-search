@@ -30,6 +30,17 @@ Or relative date values like `now`, last 10 mins `-10m`, last 5 weeks `-5w`, las
              .value_name("ACCOUNT")
              .env("LOGGLY_ACCOUNT")
              .help("Loggly Account to search logs in use")
-             .takes_value(true)).get_matches();
+             .takes_value(true))
+        .arg(Arg::with_name("query")
+             .short("q")
+             .long("query")
+             .value_name("Query")
+             .default_value("*")
+             .allow_hyphen_values(true)
+             .help(
+                 "Query search. Refer: https://documentation.solarwinds.com/en/Success_Center/loggly/Content/admin/search-query-language.htm "
+             )
+             .takes_value(true))
+        .get_matches();
     matches
 }
