@@ -28,7 +28,7 @@ impl Loggly {
     }
 
     fn create_search_uri(&self) -> String {
-        format!("https://{}.loggly.com/apiv2/events/iterate?q=*&from={}&until=now&size=100", self.account, self.from)
+        format!("https://{}.loggly.com/apiv2/events/iterate?q=*&from={}&until=now&size=100&order=asc", self.account, self.from)
     }
 
     pub async fn fetch_logs(&mut self) {
@@ -61,10 +61,19 @@ impl Loggly {
     }
 
 
-    fn get_search_uri(&self) -> String {
+    fn get_search_uri(&mut self) -> String {
         let uri = match self.response {
             None => self.create_search_uri(),
-            Some(ref json) => String::from(json.get("next").unwrap().as_str().unwrap()),
+            Some(ref json) => {
+                match json.get("next") {
+                    Some(next) => String::from(next.as_str().unwrap()),
+                    None => {
+                        eprintln!("Updating timestamp!");
+                        self.update_last_timestamp();
+                        self.create_search_uri()
+                    },
+                }
+            }
         };
         uri
     }
@@ -75,6 +84,18 @@ impl Loggly {
             None => None,
         }
     }
+
+    fn update_last_timestamp(&mut self) {
+        if let Some(event) = self.get_log_events() {
+            match event.last() {
+                Some(value) => {
+                    self.from = (value.get("timestamp").unwrap().as_u64().unwrap() + 1).to_string();
+                },
+                None => return,
+            }
+        }
+    }
+
 
     pub async fn print_logs(&mut self) {
         let stdout = io::stdout();
