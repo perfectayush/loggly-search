@@ -1,9 +1,9 @@
 extern crate reqwest;
 
-use std::io;
+use std::{io, process::exit};
 use std::io::Write;
 
-use reqwest::Client;
+use reqwest::{Client, StatusCode};
 use serde_json::value::Value;
 
 
@@ -31,18 +31,31 @@ impl Loggly {
 
     pub async fn fetch_logs(&mut self) {
         let uri = self.get_search_uri();
-        let res = self.client
+
+        let response = self.client
             .get(uri)
             .bearer_auth(&self.api_token)
-            .send().await
-            .and_then(|r| Ok(r.json()))
-            .unwrap().await;
-        let json = match res {
-            Ok(json) => Some(json),
-            _ => None,
+            .send().await;
+
+        self.response = match response {
+            Err(error) => {
+                println!("Error occurred while making request: {:?}", error);
+                exit(1)
+            }
+
+            Ok(ok_response) => {
+                let status_code = ok_response.status();
+                let json: Value = ok_response.json().await.unwrap();
+                match status_code {
+                    StatusCode::UNAUTHORIZED => {
+                        println!("Error: {}", json);
+                        exit(1)
+                    },
+                    _ => Some(json)
+                }
+            }
         };
 
-        self.response = json;
     }
 
 
