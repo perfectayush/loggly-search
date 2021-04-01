@@ -26,7 +26,7 @@ impl Loggly {
     }
 
     fn create_search_uri(&self) -> String {
-        format!("https://{}.loggly.com/apiv2/events/iterate?q=*&from=-10m&until=now&size=1000", self.account)
+        format!("https://{}.loggly.com/apiv2/events/iterate?q=*&from=-10m&until=now&size=100", self.account)
     }
 
     pub async fn fetch_logs(&mut self, uri: &str) {
