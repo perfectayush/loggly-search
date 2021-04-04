@@ -10,6 +10,12 @@ async fn main() {
     let account = args.value_of("account").unwrap_or("unset");
     let from = args.value_of("from").unwrap();
     let query = args.value_of("query").unwrap();
+    let verbosity = args.occurrences_of("verbosity") as usize;
     let mut loggly_client = Loggly::init(&account, &token, &from, &query);
+    stderrlog::new()
+        .module(module_path!())
+        .verbosity(verbosity)
+        .init()
+        .unwrap();
     loggly_client.main_loop().await;
 }

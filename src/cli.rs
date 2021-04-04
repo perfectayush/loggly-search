@@ -42,6 +42,10 @@ Or absolute Unix timestamp in *milliseconds* eg. `1617315836793`"
                  "Query search. Refer: https://documentation.solarwinds.com/en/Success_Center/loggly/Content/admin/search-query-language.htm "
              )
              .takes_value(true))
+        .arg(Arg::with_name("verbosity")
+             .short("v")
+             .multiple(true)
+             .help("Increase message verbosity"))
         .get_matches();
     matches
 }

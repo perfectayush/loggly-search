@@ -3,6 +3,7 @@ extern crate reqwest;
 use std::{io, process::exit};
 use std::io::Write;
 
+use log::*;
 use reqwest::{Client, StatusCode};
 use serde_json::value::Value;
 
@@ -43,7 +44,7 @@ impl Loggly {
 
         self.response = match response {
             Err(error) => {
-                println!("Error occurred while making request: {:?}", error);
+                error!("Error occurred while making request: {:?}", error);
                 exit(1)
             }
 
@@ -52,7 +53,7 @@ impl Loggly {
                 let json: Value = ok_response.json().await.unwrap();
                 match status_code {
                     StatusCode::UNAUTHORIZED => {
-                        println!("Error: {}", json);
+                        error!("{}", json);
                         exit(1)
                     },
                     _ => Some(json)
@@ -70,7 +71,7 @@ impl Loggly {
                 match json.get("next") {
                     Some(next) => String::from(next.as_str().unwrap()),
                     None => {
-                        eprintln!("Updating timestamp!");
+                        debug!("Updating timestamp!");
                         self.update_last_timestamp();
                         self.create_search_uri()
                     },
