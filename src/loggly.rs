@@ -56,7 +56,7 @@ impl Loggly {
                         error!("{}", json);
                         exit(1)
                     },
-                    _ => Some(json)
+                    _ => Some(json),
                 }
             }
         };
