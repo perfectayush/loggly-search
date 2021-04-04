@@ -41,11 +41,13 @@ OPTIONS:
 ```
 
 ### Setup creds
-You can pass loggly account and loggly api token info with flags above, or you can also pass this info in a environment variable.
+You can pass loggly account and loggly api token info with flags above, or you can also pass the credentials via following environment variables.
 ```shell
 export LOGGLY_ACCOUNT=<loggly_account_name>
 export LOGGLY_API_TOKEN=<loggly_secret_api_token>
 ```
+
+Refer [these docs](https://documentation.solarwinds.com/en/Success_Center/loggly/Content/admin/token-based-api-authentication.htm?cshid=loggly_token-based-api-authentication) on how to retrieve API token
 
 ### Search
 ```shell
