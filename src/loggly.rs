@@ -1,5 +1,7 @@
 extern crate reqwest;
 
+use tokio::time::sleep;
+use std::time::Duration;
 use std::{io, process::exit};
 use std::io::Write;
 
@@ -35,7 +37,7 @@ impl Loggly {
     }
 
     pub async fn fetch_logs(&mut self) {
-        let uri = self.get_search_uri();
+        let uri = self.get_search_uri().await;
 
         let response = self.client
             .get(uri)
@@ -64,7 +66,7 @@ impl Loggly {
     }
 
 
-    fn get_search_uri(&mut self) -> String {
+    async fn get_search_uri(&mut self) -> String {
         let uri = match self.response {
             None => self.create_search_uri(),
             Some(ref json) => {
@@ -73,6 +75,7 @@ impl Loggly {
                     None => {
                         debug!("Updating timestamp!");
                         self.update_last_timestamp();
+                        sleep(Duration::new(1,0)).await;
                         self.create_search_uri()
                     },
                 }
