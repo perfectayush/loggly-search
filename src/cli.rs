@@ -1,8 +1,8 @@
-use clap::{App, Arg, ArgMatches};
+use clap::{App, Arg, ArgMatches, crate_version};
 
 pub fn get_cli_args() -> ArgMatches<'static> {
     let matches = App::new("loggly")
-        .version("1.0")
+        .version(crate_version!())
         .author("Ayush Goyal <perfectayush@gmail.com>")
         .about("Search logs from loggly cloud")
         .arg(Arg::with_name("account")
